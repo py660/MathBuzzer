@@ -21,5 +21,5 @@ pip install -r requirements.txt # aiohttp, python-socketio
 npm run build
 
 # Serve
-PORT=6600 python3 main.py
+PORT=6600 python3 main.py # add VERBOSE=true to see INFO logs
 ```
