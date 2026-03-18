@@ -249,4 +249,4 @@ app.router.add_static('/static', 'static')
 app.router.add_static('/dist', 'dist')
 
 if __name__ == '__main__':
-    web.run_app(app, port=os.environ.get('PORT', 6600))
+    web.run_app(app, port=int(os.environ.get('PORT', 6600)))
