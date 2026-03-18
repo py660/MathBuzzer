@@ -111,12 +111,12 @@ function prompt(question: string, defaultText: string = '', maxLength: number = 
 }
 
 roleRadios.forEach(radio => {
+    radio.removeAttribute('checked')
     radio.addEventListener('change', () => {
         formSectionPlayer.classList.toggle('vishidden', radio.value === 'admin');
         name.required = code.required = radio.value === 'player';
     });
 });
-
 name.maxLength = MAX_NAME_LENGTH;
 
 connectForm.addEventListener('submit', () => {
