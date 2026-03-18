@@ -222,29 +222,29 @@ connectForm.addEventListener('submit', () => {
                 let actions = document.createElement('td');
 
                 let kickbtn = document.createElement('i');
-                kickbtn.classList.add("fa-solid", "fa-user-xmark")
-                kickbtn.ariaLabel = kickbtn.title = "Kick Player"
-                kickbtn.addEventListener("click", kickCurry(e.sid));
+                kickbtn.classList.add('fa-solid', 'fa-user-xmark')
+                kickbtn.ariaLabel = kickbtn.title = 'Kick Player'
+                kickbtn.addEventListener('click', kickCurry(e.sid));
 
                 let resetbtn = document.createElement('i');
-                resetbtn.classList.add("fa-solid", "fa-thumbtack-slash");
-                resetbtn.ariaLabel = resetbtn.title = "Reset Buzzer";
-                resetbtn.addEventListener("click", resetCurry(e.sid));
+                resetbtn.classList.add('fa-solid', 'fa-thumbtack-slash');
+                resetbtn.ariaLabel = resetbtn.title = 'Reset Buzzer';
+                resetbtn.addEventListener('click', resetCurry(e.sid));
 
                 let renamebtn = document.createElement('i');
-                renamebtn.classList.add("fa-solid", "fa-pen-to-square");
-                renamebtn.ariaLabel = renamebtn.title = "Rename Player";
-                renamebtn.addEventListener("click", renameCurry(e.sid, e.name));
+                renamebtn.classList.add('fa-solid', 'fa-pen-to-square');
+                renamebtn.ariaLabel = renamebtn.title = 'Rename Player';
+                renamebtn.addEventListener('click', renameCurry(e.sid, e.name));
 
                 let plusbtn = document.createElement('i');
-                plusbtn.classList.add("fa-solid", "fa-plus");
-                plusbtn.ariaLabel = plusbtn.title = "Increment Score";
-                plusbtn.addEventListener("click", plusCurry(e.sid));
+                plusbtn.classList.add('fa-solid', 'fa-plus');
+                plusbtn.ariaLabel = plusbtn.title = 'Increment Score';
+                plusbtn.addEventListener('click', plusCurry(e.sid));
 
                 let minusbtn = document.createElement('i');
-                minusbtn.classList.add("fa-solid", "fa-minus");
-                minusbtn.ariaLabel = minusbtn.title = "Decrement Score";
-                minusbtn.addEventListener("click", minusCurry(e.sid));
+                minusbtn.classList.add('fa-solid', 'fa-minus');
+                minusbtn.ariaLabel = minusbtn.title = 'Decrement Score';
+                minusbtn.addEventListener('click', minusCurry(e.sid));
 
                 actions.appendChild(kickbtn)
                 actions.appendChild(resetbtn)
@@ -270,14 +270,14 @@ connectForm.addEventListener('submit', () => {
             locked = data.locked;
             playerBuzzer.classList.toggle('green', buzzed)
             playerBuzzer.classList.toggle('yellow', locked);
-            playerBuzzer.innerText = locked ? "LOCKED" : (buzzed ? "Already Buzzed" : "Buzz In");
+            playerBuzzer.innerText = locked ? 'LOCKED' : (buzzed ? 'Already Buzzed' : 'Buzz In');
         }
     });
     socket.on('adminbuzzstate', (data) => {
         if (role === 'admin') {
             locked = data.locked;
             adminBuzzer.classList.toggle('green', locked);
-            adminBuzzer.innerText = locked ? "Start Round" : "End Round";
+            adminBuzzer.innerText = locked ? 'Start Round' : 'End Round';
             adminBuzzboard.innerHTML = '';
             data.players.forEach((e, i)=> {
                 let tr = document.createElement('tr');
@@ -302,7 +302,7 @@ connectForm.addEventListener('submit', () => {
 
     playerBuzzer.addEventListener('click', async () => {
         if (buzzed || locked) return;
-        let answer = await prompt("What's your answer?", '', MAX_ANSWER_LENGTH);
+        let answer = await prompt('What\'s your answer?', '', MAX_ANSWER_LENGTH);
         if (!answer) return;
         buzzed = true;
         socket.emit('buzz', answer);
