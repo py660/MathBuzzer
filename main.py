@@ -139,11 +139,11 @@ async def connect(sid, environ, auth):
 async def disconnect(sid, reason):
     if sid in admins:
         logger.info(f'[{admins[sid].room.code}][{sid}] Disconnected due to: {reason}')
+        logger.info(f'[{admins[sid].room.code}][{sid}] Ended the game')
         for player in admins[sid].room.players:
             await sio.disconnect(player.sid)
         rooms.pop(admins[sid].room.code)
         admins.pop(sid)
-        logger.info(f'[{admins[sid].room.code}][{sid}] Ended the game')
     if sid in players:
         logger.info(f'[{players[sid].room.code}][{sid}] Disconnected due to: {reason}')
         players[sid].room.players.remove(players[sid])
