@@ -4,8 +4,8 @@
   "description": "Buzzer system with answer collection for time-critical contests.",
   "main": "src/script.ts",
   "scripts": {
-    "build": "webpack -c webpack.config.ts --mode production",
-    "continuousBuild": "webpack -c webpack.config.ts --mode production -w"
+    "build": "webpack -c webpack.config.js --mode production",
+    "continuousBuild": "webpack -c webpack.config.js --mode production -w"
   },
   "dependencies": {
     "awesome-notifications": "^3.1.3",

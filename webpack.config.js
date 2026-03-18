@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "url";
-import webpack from "webpack";
+//import webpack from "webpack";
 
 // in case you run into any TypeScript error when configuring `devServer`
 import "webpack-dev-server";
@@ -8,7 +8,7 @@ import "webpack-dev-server";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const config: webpack.Configuration = {
+const config = {
     entry: "./src/script.ts",
     module: {
         rules: [
