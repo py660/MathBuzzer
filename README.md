@@ -3,6 +3,7 @@
 MathBuzzer is [buzzin.live](https://buzzin.live) but with answer collection and a refreshed UI.
 
 # Give it a try at [https://buzzer.groups.id](https://buzzer.groups.id)!
+<hr>
 
 # Quickstart
 
