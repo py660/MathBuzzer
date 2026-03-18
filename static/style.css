@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+html, body {
+    min-height: 100vh;
+}
+body {
+    margin: 0;
+    padding: 25px;
+    font-family: "Roboto Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+    color: #222222;
+}
+
+dialog .dialogactionbox {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+
+    & input[type='text'] {
+        flex-grow: 1;
+    }
+}
+
+.connectbox {
+    transform: translateY(calc(50vh - 50%));
+    align-self: center;
+    align-items: center;
+    align-content: center;
+    box-shadow: #BBCDE5 0 0 20px;
+    background: #c4d4ef;
+    max-width: 800px;
+    margin: auto;
+    font-size: 2em;
+
+    & .rolebuttongroup {
+        display: block;
+        border-spacing: 20px;
+        & .rolebutton {
+            border: 2px solid #aaaaaa;
+            cursor: pointer;
+            text-align: center;
+            display: table-cell;
+            width: 1%;
+
+            background: #dddddd;
+            color: #aaaaaa;
+            &:has(input[type="radio"]:checked), &:has(input[type="radio"]:invalid) {
+                border: 2px solid #222222;
+                color: #222222;
+                background: #92c8cf;
+                &.dark {
+                    background: #4f94d6;
+                }
+            }
+
+            & label {
+                cursor: pointer;
+                display: block;
+                width: calc(100% - 20px);
+                padding: 10px;
+            }
+
+            & input[type="radio"] {
+                position: absolute;
+                top: -99999vh;
+                left: -99999vw;
+                opacity: 0;
+            }
+        }
+    }
+
+    & .joinboxgroup {
+        align-items: center;
+
+        & .joinbox {
+            width: 50%;
+            margin: 10px auto;
+
+            & input {
+                width: 100%;
+                line-height: 45px;
+                font-size: 1em;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+        }
+    }
+
+    & {
+        * .submitbox {
+            margin: 30px auto auto;
+        }
+        & input.connect {
+            border: 2px solid #aaaaaa;
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            font-family: "Roboto Mono", monospace;
+            display: block;
+            background: #dddddd;
+            color: #aaaaaa;
+        }
+        &:has(.rolebutton:not(.dark) input[type="radio"]:checked) input.connect {
+            border: 2px solid #222222;
+            color: #222222;
+            background: #92c8cf;
+            cursor: pointer;
+        }
+        &:has(.rolebutton.dark input[type="radio"]:checked) input.connect {
+            border: 2px solid #222222;
+            color: #222222;
+            background: #4f94d6;
+            cursor: pointer;
+        }
+    }
+}
+
+button.buzzer {
+    cursor: pointer;
+    display: block;
+    font-family: "Roboto Mono", monospace;
+    font-weight: bold;
+    font-size: 35px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-width: 5px;
+    margin: auto;
+
+    & {
+        background: #f62e2e;
+
+        &:hover {
+            background: #f35454;
+        }
+
+        &:active {
+            background: #ec4646;
+        }
+    }
+
+    &.green {
+        background: #2ef66d;
+
+        &:hover {
+            background: #54f36e;
+        }
+
+        &:active {
+            background: #46ec7b;
+        }
+    }
+
+    &.yellow {
+        background: #f6d52e;
+
+        &:hover {
+            background: #f3d354;
+        }
+
+        &:active {
+            background: #eccb46;
+        }
+    }
+}
+
+/*
+ol.player_leaderboard {
+    padding: 0 15px 0 30px;
+
+    & li.me {
+        font-weight: bold;
+    }
+
+    & li.me::after {
+        content: "*";
+    }
+
+    & li .points {
+        float: right;
+    }
+}*/
+
+.gamebox {
+    max-width: 800px;
+    margin: auto;
+
+    & h1 {
+        padding: 0 15px;
+    }
+}
+
+fieldset.leaderboard {
+    margin-top: 20px;
+    & table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #dddddd;
+
+        & td, th {
+            padding: 10px;
+            text-align: left;
+
+            &.right {
+                text-align: right;
+            }
+        }
+
+        & tr td {
+            overflow: scroll;
+        }
+
+        & tr {
+            &.me {
+                font-weight: bold;
+            }
+        }
+
+        & thead td {
+            border: 1px solid grey;
+            font-weight: bold;
+        }
+
+        & tr td:first-of-type, tr td:last-of-type {
+            width: 1px;
+        }
+
+        & tr td:first-of-type i {
+            cursor: pointer;
+            text-align: center;
+            align-content: center;
+            width: 1em;
+            height: 1em;
+            font-size: 0.8em;
+            padding: 6px;
+            margin: 0 2px;
+
+            background: #dddddd;
+            border-radius: 50%;
+        }
+
+        & thead tr {
+            background: #a7d6e4;
+        }
+
+        & tr:nth-child(even) {
+            background: #e8f7fb;
+        }
+    }
+}
+
+.resetallbox {
+    width: 100%;
+    margin: 10px 0;
+
+    & button.resetall {
+        cursor: pointer;
+        border: 2px solid #222222;
+        background: #f62e2e;
+        width: 100%;
+        padding: 10px;
+        font-size: 1em;
+        font-family: "Roboto Mono", monospace;
+        display: block;
+    }
+}
+
+.hidden {
+    display: none;
+}
+.vishidden {
+    visibility: hidden;
+}
+.floatright {
+    float: right;
+}
+.code {
+    text-decoration: underline;
+}
+.points::after {
+    content: " pts";
+}

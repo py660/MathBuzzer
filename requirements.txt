@@ -1,0 +1,2 @@
+aiohttp==3.13.3
+python-socketio==5.16.1

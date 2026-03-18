@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Buzzer Portal</title>
+    <link rel="stylesheet" href="static/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link type="text/css" rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <dialog id="dialog">
+        <form id="dialog_form" action="javascript:void(0);">
+            <h3 id="dialog_question"></h3>
+            <div class="dialogactionbox">
+                <input id="dialog_answer" type="text" aria-label="Answer">
+                <input type="button" id="dialog_cancel" value="Cancel">
+                <input type="submit" id="dialog_confirm" value="Confirm">
+            </div>
+        </form>
+    </dialog>
+    <div id="connect_box" class="connectbox">
+        <form id="connect_form" action="javascript:void(0);">
+            <div class="rolebuttongroup">
+                <div class="rolebutton dark">
+                    <input type="radio" id="role_player" name="role" value="player" required>
+                    <label for="role_player">Join Game</label>
+                </div>
+                <div class="rolebutton">
+                    <input type="radio" id="role_admin" name="role" value="admin">
+                    <label for="role_admin">Create Game</label>
+                </div>
+            </div>
+            <div id="form_section_player" class="joinboxgroup vishidden">
+                <div class="joinbox">
+                    <input type="number" id="code" name="code" placeholder="Game ID" aria-label="Game ID" required>
+                </div>
+                <div class="joinbox">
+                    <input type="text" id="name" name="name" placeholder="Name" aria-label="Name" autocomplete="name" required>
+                </div>
+            </div>
+            <div class="submitbox">
+                <input type="submit" id="formSubmit" class="connect" value="Connect">
+            </div>
+        </form>
+    </div>
+    <div id="player_box" class="gamebox hidden">
+        <h1>Game ID: <span id="player_code" class="code"></span> <span id="player_countdown" class="floatright"></span></h1>
+        <button id="player_buzzer" class="buzzer">Buzz In</button>
+        <fieldset class="leaderboard">
+            <legend>Leaderboard</legend>
+            <table>
+                <thead>
+                <tr>
+                    <td class="right">#</td>
+                    <td>Name</td>
+                    <td>Score&nbsp;</td>
+                </tr>
+                </thead>
+                <tbody id="player_leaderboard">
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+    <div id="admin_box" class="gamebox hidden">
+        <h1>Game ID: <span id="admin_code" class="code"></span> <span id="admin_countdown" class="floatright">00:00</span></h1>
+        <button id="admin_buzzer" class="buzzer green">Start Round</button>
+        <fieldset class="leaderboard">
+            <legend>Players</legend>
+            <table>
+                <thead>
+                <tr>
+                    <td class="right">Player&nbsp;Controls</td>
+                    <td>Name</td>
+                    <td>Score&nbsp;</td>
+                </tr>
+                </thead>
+                <tbody id="admin_leaderboard">
+                </tbody>
+            </table>
+            <div class="resetallbox">
+                <button id="reset_all" class="resetall">Reset All Buzzers</button>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <td class="right">#</td>
+                    <td>Name</td>
+                    <td>Submitted&nbsp;Answer</td>
+                </tr>
+                </thead>
+                <tbody id="admin_buzzboard">
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+    <!--script>var exports = {};/*hack*/</script-->
+    <script src="static/notifications.var.js"></script>
+    <script src="dist/bundle.js"></script>
+</body>
+</html>
