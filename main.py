@@ -160,7 +160,7 @@ async def disconnect(sid, reason):
 
 @sio.on('buzz')
 async def buzz(sid, answer):
-    if sid in players and not players[sid].buzzed:
+    if sid in players and not players[sid].buzzed and not players[sid].room.locked:
         if len(answer) <= MAX_ANSWER_LENGTH:
             logger.info(f'[{players[sid].room.code}][{sid}] Submitted an answer')
             players[sid].buzz(answer)
