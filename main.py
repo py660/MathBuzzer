@@ -140,8 +140,11 @@ async def disconnect(sid, reason):
     if sid in admins:
         logger.info(f'[{admins[sid].room.code}][{sid}] Disconnected due to: {reason}')
         logger.info(f'[{admins[sid].room.code}][{sid}] Ended the game')
+        sids = []
         for player in admins[sid].room.players:
-            await sio.disconnect(player.sid)
+            sids.append(player.sid)
+        for playersid in sids:
+            await sio.disconnect(playersid)
         rooms.pop(admins[sid].room.code)
         admins.pop(sid)
     if sid in players:
