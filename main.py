@@ -1,14 +1,19 @@
 from aiohttp import web  # pyright: ignore[reportMissingImports]
 import socketio  # pyright: ignore[reportMissingImports]
 import random
+import logging
 import time
+import os
 from socketio.exceptions import ConnectionRefusedError  # pyright: ignore[reportMissingImports]
 from typing import Dict
 
 # TODO: Implement timer
 
+logger = logging.getLogger(__name__)
+
 sio = socketio.AsyncServer(cors_allowed_origins=[
-    'https://buzzer.groups.id'
+    'https://buzzer.groups.id', # NOTE: Add your own domain here
+    'http://localhost:6600'
 ])
 app = web.Application()
 sio.attach(app)
@@ -103,7 +108,6 @@ async def update_admin_buzzstate(admin: Admin):
 
 @sio.event
 async def connect(sid, environ, auth):
-    print("connect ", sid)
     if not auth:
         raise ConnectionRefusedError("No authentication data!")
     if auth.get("role") == "admin":
@@ -112,6 +116,7 @@ async def connect(sid, environ, auth):
         admins[sid] = Admin(sid, room)
         room.assign_admin(admins[sid])
         await update_admin_buzzstate(admins[sid])
+        logger.info(f"[{code}][{sid}] Started the game")
     elif auth.get("role") == "player":
         if not (room := rooms.get(auth.get("code"))):
             raise ConnectionRefusedError("No such room exists!")
@@ -122,6 +127,7 @@ async def connect(sid, environ, auth):
         players[sid] = Player(sid, auth.get("name"), room)
         room.players.append(players[sid])
         await update_player_buzzstate(players[sid])
+        logger.info(f"[{room.code}][{sid}] Joined")
     else:
         raise ConnectionRefusedError("Invalid role!")
 
@@ -130,13 +136,15 @@ async def connect(sid, environ, auth):
 
 @sio.event
 async def disconnect(sid, reason):
-    print('disconnect ', sid, reason)
     if sid in admins:
+        logger.info(f"[{admins[sid].room.code}][{sid}] Disconnected due to: {reason}")
         for player in admins[sid].room.players:
             await sio.disconnect(player.sid)
         rooms.pop(admins[sid].room.code)
         admins.pop(sid)
-    elif sid in players:
+        logger.info(f"[{admins[sid].room.code}][{sid}] Ended the game")
+    if sid in players:
+        logger.info(f"[{players[sid].room.code}][{sid}] Disconnected due to: {reason}")
         players[sid].room.players.remove(players[sid])
         await update_leaderboard(players[sid].room)
         await update_admin_buzzstate(players[sid].room.admin)
@@ -151,37 +159,39 @@ async def disconnect(sid, reason):
 
 @sio.on("buzz")
 async def buzz(sid, answer):
-    print(f"Buzz from {sid}: {answer}")
     if sid in players and not players[sid].buzzed:
         if len(answer) <= MAX_ANSWER_LENGTH:
+            logger.info(f"[{players[sid].room.code}][{sid}] Submitted an answer")
             players[sid].buzz(answer)
-        await update_player_buzzstate(players[sid])
+        else:
+            logger.warning(f"[{players[sid].room.code}][{sid}] Sent an answer that was too long")
+        await update_player_buzzstate(players[sid]) # Prevent client desync
         await update_admin_buzzstate(players[sid].room.admin)
 
 # Admin Controls
 
 @sio.on("lock")
 async def lock(sid):
-    print(f"Lock from {sid}")
     if sid in admins:
         admins[sid].room.lock()
+        logger.info(f"[{admins[sid].room.code}][{sid}] Locked all buzzers")
         for player in admins[sid].room.players:
             await update_player_buzzstate(player)
         await update_admin_buzzstate(admins[sid])
 
 @sio.on("unlock")
 async def unlock(sid):
-    print(f"Unlock from {sid}")
     if sid in admins:
         admins[sid].room.unlock()
+        logger.info(f"[{admins[sid].room.code}][{sid}] Unlocked all buzzers")
         for player in admins[sid].room.players:
             await update_player_buzzstate(player)
         await update_admin_buzzstate(admins[sid])
 
 @sio.on("resetall")
 async def resetall(sid):
-    print(f"Reset-All from {sid}")
     if sid in admins:
+        logger.info(f"[{admins[sid].room.code}][{sid}] Reset all buzzers")
         for player in admins[sid].room.players:
             player.unbuzz()
             await update_player_buzzstate(player)
@@ -190,14 +200,14 @@ async def resetall(sid):
 @sio.on("kick")
 async def kick(sid, target):
     if sid in admins and players.get(target) in admins[sid].room.players:
-        print(f"Kick from {sid} for {target}")
+        logger.info(f"[{admins[sid].room.code}][{sid}] Kicked player [{target}]")
         await sio.disconnect(target)
         await update_leaderboard(admins[sid].room)
 
 @sio.on("reset")
 async def reset(sid, target):
     if sid in admins and players.get(target) in admins[sid].room.players:
-        print(f"Reset from {sid} for {target}")
+        logger.info(f"[{admins[sid].room.code}][{sid}] Reset [{target}]'s buzzer")
         players[target].unbuzz()
         await update_player_buzzstate(players[target])
         await update_admin_buzzstate(admins[sid])
@@ -206,34 +216,37 @@ async def reset(sid, target):
 async def rename(sid, target, new_name):
     if sid in admins and players.get(target) in admins[sid].room.players:
         if len(new_name) <= MAX_NAME_LENGTH:
-            print(f"Rename from {sid} for {target}: {new_name}")
+            logger.info(f"[{admins[sid].room.code}][{sid}] Renamed [{target}]")
             players[target].rename(new_name)
+        else:
+            logger.warning(f"[{admins[sid].room.code}][{sid}] Tried to rename [{target}] to a name that was too long")
         await update_leaderboard(admins[sid].room)
         await update_admin_buzzstate(admins[sid])
 
 @sio.on("plus")
 async def plus(sid, target):
     if sid in admins and players.get(target) in admins[sid].room.players:
-        print(f"Increment from {sid} for {target}")
+        logger.info(f"[{admins[sid].room.code}][{sid}] Updated [{target}]'s score")
         players[target].increment()
         await update_leaderboard(admins[sid].room)
 
 @sio.on("minus")
 async def minus(sid, target):
     if sid in admins and players.get(target) in admins[sid].room.players:
-        print(f"Decrement from {sid} for {target}")
+        logger.info(f"[{admins[sid].room.code}][{sid}] Updated [{target}]'s score")
         players[target].decrement()
         await update_leaderboard(admins[sid].room)
 
 # endregion Client Signals
 
 async def index(request):
-    with open('index.html') as f:
+    with open('public/index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
+app.router.add_get('/', index)
+app.router.add_static('/', 'public')
 app.router.add_static('/static', 'static')
 app.router.add_static('/dist', 'dist')
-app.router.add_get('/', index)
 
 if __name__ == '__main__':
-    web.run_app(app, port=6600)
+    web.run_app(app, port=os.environ.get('PORT', 6600))

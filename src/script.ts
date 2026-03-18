@@ -129,7 +129,7 @@ connectForm.addEventListener('submit', () => {
     let role = Array.from(roleRadios).filter(e=>e.checked)[0].value;
 
     formSubmit.disabled = true;
-    let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('localhost:6600'/*window.location.host*/, {
+    let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(/*'localhost:6600'*/window.location.host, {
         reconnection: false,
         auth: {
             role: role,
@@ -192,7 +192,6 @@ connectForm.addEventListener('submit', () => {
     }
 
     socket.on('leaderboard', (data) => {
-        console.log(data);
         if (role === 'player'){
             playerCode.textContent = data.code;
             playerLeaderboard.innerHTML = '';
