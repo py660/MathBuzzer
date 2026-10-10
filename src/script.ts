@@ -61,6 +61,8 @@ asyncBlock() 	Show popup which blocks the screen, until passed Promise will be c
 */
 let notifier = new AWN();
 
+let connectedState = 0;
+
 const MAX_NAME_LENGTH = 25;
 const MAX_ANSWER_LENGTH = 10;
 
@@ -145,6 +147,7 @@ connectForm.addEventListener('submit', () => {
         connectBox.classList.add('hidden');
         playerBox.classList.toggle('hidden', role === 'admin');
         adminBox.classList.toggle('hidden', role === 'player');
+        connectedState = 1;
     });
 
     socket.on('connect_error', err => disconnectHandler(err))
@@ -160,6 +163,7 @@ connectForm.addEventListener('submit', () => {
         reject('negative resolution');
         await block;
         notifier.alert(err.toString());
+        connectedState = 0;
         // don't reset name
     }
 
@@ -321,5 +325,5 @@ connectForm.addEventListener('submit', () => {
 });
 
 window.onbeforeunload = function(){
-    return 'Are you sure you want to leave?';
+    if (connectedState) return 'Are you sure you want to leave?';
 };
