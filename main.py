@@ -12,6 +12,7 @@ from typing import Dict
 logger = logging.getLogger(__name__)
 
 sio = socketio.AsyncServer(cors_allowed_origins=[
+    os.environ.get("SERVER_ORIGIN", os.getenv("COOLIFY_URL")),
     'https://buzzer.groups.id', # NOTE: Add your own domain here
     'https://www.buzzer.groups.id', # ugh safari
     'http://localhost:6600'
